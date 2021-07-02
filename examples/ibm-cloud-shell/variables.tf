@@ -3,16 +3,11 @@ variable "ibmcloud_api_key" {
   type        = string
 }
 
-// Resource arguments for cloud_shell_account_settings
+// Resource and Data source arguments for cloud_shell_account_settings
 variable "cloud_shell_account_settings_account_id" {
   description = "The account ID in which the account settings belong to."
   type        = string
   default     = "account_id"
-}
-variable "cloud_shell_account_settings_rev" {
-  description = "Unique revision number for the settings object."
-  type        = string
-  default     = "placeholder"
 }
 variable "cloud_shell_account_settings_default_enable_new_features" {
   description = "You can choose which Cloud Shell features are available in the account and whether any new features are enabled as they become available. The feature settings apply only to the enabled Cloud Shell locations."

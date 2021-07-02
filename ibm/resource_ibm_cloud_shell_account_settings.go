@@ -88,13 +88,6 @@ func resourceIBMCloudShellAccountSettings() *schema.Resource {
 					},
 				},
 			},
-			"tags": &schema.Schema{
-				Type:        schema.TypeSet,
-				Elem:        &schema.Schema{Type: schema.TypeString},
-				Set:         resourceIBMVPCHash,
-				Optional:    true,
-				Description: "List of tags",
-			},
 			"id": &schema.Schema{
 				Type:        schema.TypeString,
 				Computed:    true,
@@ -350,11 +343,23 @@ func resourceIBMCloudShellAccountSettingsUpdate(context context.Context, d *sche
 		hasChange = true
 	}
 	if d.HasChange("features") {
-		// TODO: handle Features of type TypeList -- not primitive, not model
+		var features []ibmcloudshellv1.Feature
+		for _, e := range d.Get("features").([]interface{}) {
+			value := e.(map[string]interface{})
+			featuresItem := resourceIBMCloudShellAccountSettingsMapToFeature(value)
+			features = append(features, featuresItem)
+		}
+		updateAccountSettingsOptions.SetFeatures(features)
 		hasChange = true
 	}
 	if d.HasChange("regions") {
-		// TODO: handle Regions of type TypeList -- not primitive, not model
+		var regions []ibmcloudshellv1.RegionSetting
+		for _, e := range d.Get("regions").([]interface{}) {
+			value := e.(map[string]interface{})
+			regionsItem := resourceIBMCloudShellAccountSettingsMapToRegionSetting(value)
+			regions = append(regions, regionsItem)
+		}
+		updateAccountSettingsOptions.SetRegions(regions)
 		hasChange = true
 	}
 
@@ -370,28 +375,6 @@ func resourceIBMCloudShellAccountSettingsUpdate(context context.Context, d *sche
 }
 
 func resourceIBMCloudShellAccountSettingsDelete(context context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	ibmCloudShellClient, err := meta.(ClientSession).IBMCloudShellV1()
-	if err != nil {
-		return diag.FromErr(err)
-	}
-
-	updateAccountSettingsOptions := &ibmcloudshellv1.UpdateAccountSettingsOptions{}
-
-	parts, err := sepIdParts(d.Id(), "/")
-	if err != nil {
-		return diag.FromErr(err)
-	}
-
-	updateAccountSettingsOptions.SetAccountID(parts[0])
-	updateAccountSettingsOptions.SetAccountID(parts[1])
-
-	_, response, err := ibmCloudShellClient.UpdateAccountSettingsWithContext(context, updateAccountSettingsOptions)
-	if err != nil {
-		log.Printf("[DEBUG] UpdateAccountSettingsWithContext failed %s\n%s", err, response)
-		return diag.FromErr(fmt.Errorf("UpdateAccountSettingsWithContext failed %s\n%s", err, response))
-	}
-
-	d.SetId("")
-
+	// Cloud Shell does not support delete of account settings subsequently delete is a no-op.
 	return nil
 }

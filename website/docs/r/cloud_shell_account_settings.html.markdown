@@ -8,13 +8,37 @@ subcategory: "IBM Cloud Shell"
 
 # ibm\_cloud_shell_account_settings
 
-Provides a resource for cloud_shell_account_settings. This allows cloud_shell_account_settings to be created, updated and deleted.
+Provides a resource for cloud_shell_account_settings. This allows cloud_shell_account_settings to be updated.
 
 ## Example Usage
 
 ```hcl
-resource "cloud_shell_account_settings" "cloud_shell_account_settings" {
-  account_id = "account_id"
+resource "ibm_cloud_shell_account_settings" "cloud_shell_account_settings" {
+  account_id = "12345678-abcd-1a2b-a1b2-1234567890ab"
+  rev = "130-1bc9ec83d7b9b049890c6d4b74dddb2a"
+  default_enable_new_features = true
+  default_enable_new_regions = true
+  enabled = true
+  features {
+  	enabled = true
+  	key = "server.file_manager"
+  }
+  features {
+  	enabled = true
+  	key = "server.web_preview"
+  }
+  regions {
+  	enabled = true
+  	key = "eu-de"
+  }
+  regions {
+  	enabled = true
+  	key = "jp-tok"
+  }
+  regions {
+  	enabled = true
+  	key = "us-south"
+  }
 }
 ```
 
@@ -41,9 +65,18 @@ The following arguments are supported:
 In addition to all arguments above, the following attributes are exported:
 
 * `id` - The unique identifier of the cloud_shell_account_settings.
-* `id` - Unique id of the settings object.
+* `rev` - Unique revision number for the settings object.
 * `created_at` - Creation timestamp in Unix epoch time.
 * `created_by` - IAM ID of creator.
+* `default_enable_new_features` - You can choose which Cloud Shell features are available in the account and whether any new features are enabled as they become available. The feature settings apply only to the enabled Cloud Shell locations.
+* `default_enable_new_regions` - Set whether Cloud Shell is enabled in a specific location for the account. The location determines where user and session data are stored. By default, users are routed to the nearest available location.
+* `enabled` - When enabled, Cloud Shell is available to all users in the account.
+* `features` - List of Cloud Shell features. Nested `features` blocks have the following structure:
+	* `enabled` - State of the feature.
+	* `key` - Name of the feature.
+* `regions` - List of Cloud Shell region settings. Nested `regions` blocks have the following structure:
+	* `enabled` - State of the region.
+	* `key` - Name of the region.
 * `type` - Type of api response object.
 * `updated_at` - Timestamp of last update in Unix epoch time.
 * `updated_by` - IAM ID of last updater.
@@ -56,7 +89,6 @@ The `account_id` property can be formed from `account_id`, and `account_id` in t
 ```
 <account_id>/<account_id>
 ```
-* `account_id`: A string. The account ID in which the account settings belong to.
 * `account_id`: A string. The account ID in which the account settings belong to.
 
 ```

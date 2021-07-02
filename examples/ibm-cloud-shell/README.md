@@ -16,17 +16,26 @@ $ terraform plan
 $ terraform apply
 ```
 
-Run `terraform destroy` when you don't need these resources.
+`terraform destroy` is not required, Cloud Shell account settings cannot be deleted.
 
+## IBMCloudShellV1 Data sources
+
+cloud_shell_account_settings data source:
+
+```hcl
+data "cloud_shell_account_settings" "cloud_shell_account_settings" {
+  account_id = var.cloud_shell_account_settings_account_id
+}
+```
 
 ## IBMCloudShellV1 resources
 
 cloud_shell_account_settings resource:
 
 ```hcl
-resource "cloud_shell_account_settings" "cloud_shell_account_settings_instance" {
+resource "cloud_shell_account_settings" "cloud_shell_account_settings" {
   account_id = var.cloud_shell_account_settings_account_id
-  rev = var.cloud_shell_account_settings_rev
+  rev = data.ibm_cloud_shell_account_settings.cloud_shell_account_settings
   default_enable_new_features = var.cloud_shell_account_settings_default_enable_new_features
   default_enable_new_regions = var.cloud_shell_account_settings_default_enable_new_regions
   enabled = var.cloud_shell_account_settings_enabled
